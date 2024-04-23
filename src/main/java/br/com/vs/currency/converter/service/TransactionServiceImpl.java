@@ -1,12 +1,15 @@
 package br.com.vs.currency.converter.service;
 
 import br.com.vs.currency.converter.model.entity.Conversion;
+import br.com.vs.currency.converter.model.enums.Currency;
 import br.com.vs.currency.converter.model.exception.NotFoundException;
 import br.com.vs.currency.converter.model.repository.ConversionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import static br.com.vs.currency.converter.utils.Messages.TRANSACTION_NOT_FOUND_MESSAGE;
 
@@ -19,9 +22,24 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Conversion converter(Conversion conversion) {
-        var rates = exchangeService.rates();
+        BigDecimal rateSource = BigDecimal.ONE;
+        BigDecimal rateTarget = BigDecimal.ONE;
+
+        if (!conversion.getTargetCurrency().equals(conversion.getSourceCurrency())) {
+            var rates = exchangeService.rates();
+
+            rateSource = getRate(conversion.getSourceCurrency(), rates);
+            rateTarget = getRate(conversion.getTargetCurrency(), rates);
+        }
+
+        conversion.calculateTarget(rateSource, rateTarget);
+        conversion.generateId();
 
         return repository.save(conversion);
+    }
+
+    private BigDecimal getRate(Currency currency, Map<Currency, BigDecimal> rates) {
+        return currency.isBase() ? BigDecimal.ONE : rates.get(currency);
     }
 
     @Override
