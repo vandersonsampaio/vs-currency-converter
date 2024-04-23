@@ -1,7 +1,10 @@
 package br.com.vs.currency.converter.model.entity;
 
+import br.com.vs.currency.converter.model.enums.Currency;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -25,19 +28,21 @@ public class Conversion {
     private Long userId;
 
     @Column(name = "cd_source_currency", nullable = false, updatable = false, length = 3)
-    private String sourceCurrency;
+    @Enumerated(EnumType.STRING)
+    private Currency sourceCurrency;
 
     @Column(name = "vl_source_amount", nullable = false, updatable = false, precision = 2, scale = 18)
     private BigDecimal sourceAmount;
 
     @Column(name = "cd_target_currency", nullable = false, updatable = false, length = 3)
-    private String targetCurrency;
+    @Enumerated(EnumType.STRING)
+    private Currency targetCurrency;
 
     @Column(name = "vl_target_amount", nullable = false, updatable = false, precision = 2, scale = 18)
     private BigDecimal targetAmount;
 
-    @Column(name = "vl_conversion_fee", nullable = false, updatable = false, precision = 7, scale = 18)
-    private BigDecimal conversionFee;
+    @Column(name = "vl_rate", nullable = false, updatable = false, precision = 7, scale = 18)
+    private BigDecimal rate;
 
     @CreationTimestamp
     @Column(name = "dt_register", updatable = false, nullable = false)

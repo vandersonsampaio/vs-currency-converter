@@ -42,6 +42,8 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
 
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
+
 	implementation 'org.flywaydb:flyway-core:10.6.0'
     implementation 'org.flywaydb:flyway-database-postgresql:10.6.0'
 
