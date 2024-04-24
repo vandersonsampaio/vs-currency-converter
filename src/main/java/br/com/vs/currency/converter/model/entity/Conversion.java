@@ -40,23 +40,23 @@ public class Conversion {
     @Enumerated(EnumType.STRING)
     private Currency sourceCurrency;
 
-    @Column(name = "vl_source_amount", nullable = false, updatable = false, precision = 2, scale = 18)
+    @Column(name = "vl_source_amount", nullable = false, updatable = false, precision = 18, scale = 2)
     private BigDecimal sourceAmount;
 
     @Column(name = "cd_target_currency", nullable = false, updatable = false, length = 3)
     @Enumerated(EnumType.STRING)
     private Currency targetCurrency;
 
-    @Column(name = "vl_target_amount", nullable = false, updatable = false, precision = 2, scale = 18)
+    @Column(name = "vl_target_amount", nullable = false, updatable = false, precision = 18, scale = 2)
     private BigDecimal targetAmount;
 
-    @Column(name = "vl_rate_source", nullable = false, updatable = false, precision = 7, scale = 18)
+    @Column(name = "vl_rate_source", nullable = false, updatable = false, precision = 18, scale = 7)
     private BigDecimal rateSource;
 
-    @Column(name = "vl_rate_target", nullable = false, updatable = false, precision = 7, scale = 18)
+    @Column(name = "vl_rate_target", nullable = false, updatable = false, precision = 18, scale = 7)
     private BigDecimal rateTarget;
 
-    @Column(name = "vl_rate_compose", nullable = false, updatable = false, precision = 7, scale = 18)
+    @Column(name = "vl_rate_compose", nullable = false, updatable = false, precision = 18, scale = 7)
     private BigDecimal rateCompose;
 
     @CreationTimestamp
@@ -68,14 +68,15 @@ public class Conversion {
     }
 
     public void calculateTarget(BigDecimal rateSource, BigDecimal rateTarget) {
-        if (rateSource.equals(BigDecimal.ZERO) || sourceAmount.equals(BigDecimal.ZERO)) {
+        if (rateSource == null || sourceAmount == null ||
+                rateSource.equals(BigDecimal.ZERO) || sourceAmount.equals(BigDecimal.ZERO)) {
             throw new ServerErrorException(CONVERSION_VALUE_ERROR_MESSAGE);
         }
 
         this.rateSource = rateSource;
         this.rateTarget = rateTarget;
 
-        BigDecimal parcialAmount = sourceAmount.divide(rateSource, 8, RoundingMode.HALF_UP);
+        BigDecimal parcialAmount = sourceAmount.divide(rateSource, 7, RoundingMode.HALF_UP);
         targetAmount = parcialAmount.multiply(rateTarget).setScale(2, RoundingMode.HALF_UP);
 
         rateCompose = targetAmount.divide(sourceAmount, 8, RoundingMode.HALF_UP);

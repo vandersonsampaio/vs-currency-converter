@@ -48,7 +48,7 @@ class TransactionServiceImplTest {
 
     static Stream<Arguments> provideCurrencies() {
         return Stream.of(
-                Arguments.of(Currency.BLR, Currency.BLR),
+                Arguments.of(Currency.BRL, Currency.BRL),
                 Arguments.of(Currency.JPY, Currency.JPY),
                 Arguments.of(Currency.USD, Currency.USD),
                 Arguments.of(Currency.EUR, Currency.EUR)
@@ -76,7 +76,7 @@ class TransactionServiceImplTest {
     @DisplayName("Should throw exception when amount value is zero")
     void throwsExcpetionWhenAmountIsZero() {
         Conversion conversion = Conversion.builder().sourceAmount(BigDecimal.ZERO)
-                .sourceCurrency(Currency.EUR).targetCurrency(Currency.BLR).build();
+                .sourceCurrency(Currency.EUR).targetCurrency(Currency.BRL).build();
 
         when(exchangeService.rates()).thenReturn(buildRates());
 
@@ -90,7 +90,7 @@ class TransactionServiceImplTest {
     @DisplayName("Should return the conversion transaction when source Currency is base")
     void converterWhenSourceCurrencyIsBase() {
         Conversion conversion = Conversion.builder().sourceAmount(BigDecimal.TEN)
-                .sourceCurrency(Currency.EUR).targetCurrency(Currency.BLR).build();
+                .sourceCurrency(Currency.EUR).targetCurrency(Currency.BRL).build();
 
         when(exchangeService.rates()).thenReturn(buildRates());
 
@@ -109,7 +109,7 @@ class TransactionServiceImplTest {
     @DisplayName("Should return the conversion transaction when target Currency is base")
     void converterWhenTargetCurrencyIsBase() {
         Conversion conversion = Conversion.builder().sourceAmount(BigDecimal.TEN)
-                .sourceCurrency(Currency.BLR).targetCurrency(Currency.EUR).build();
+                .sourceCurrency(Currency.BRL).targetCurrency(Currency.EUR).build();
 
         when(exchangeService.rates()).thenReturn(buildRates());
 
@@ -128,7 +128,7 @@ class TransactionServiceImplTest {
     @DisplayName("Should return the conversion transaction when Currencies is not base")
     void converterWhenCurrencyIsNotBase() {
         Conversion conversion = Conversion.builder().sourceAmount(BigDecimal.TEN)
-                .sourceCurrency(Currency.BLR).targetCurrency(Currency.JPY).build();
+                .sourceCurrency(Currency.BRL).targetCurrency(Currency.JPY).build();
 
         when(exchangeService.rates()).thenReturn(buildRates());
 
@@ -150,7 +150,7 @@ class TransactionServiceImplTest {
 
         service.findTransactions(userId);
 
-        verify(repository).findAllBiUserId(userId);
+        verify(repository).findAllByUserId(userId);
         verifyNoMoreInteractions(repository);
         verifyNoInteractions(exchangeService);
     }
@@ -193,7 +193,7 @@ class TransactionServiceImplTest {
     }
 
     private Map<Currency, BigDecimal> buildRates() {
-        return Map.of(Currency.BLR, BRL_VALUE,
+        return Map.of(Currency.BRL, BRL_VALUE,
                 Currency.JPY, JPY_VALUE,
                 Currency.USD, BigDecimal.valueOf(1.07));
     }

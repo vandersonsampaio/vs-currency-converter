@@ -7,7 +7,7 @@ public enum Currency {
 
     EUR("EUR", true, "Euro"),
     USD("USD", false, "American Dollar"),
-    BLR("BLR", false, "Brazilian Real"),
+    BRL("BRL", false, "Brazilian Real"),
     JPY("JPY", false, "Japanese Yen");
 
     Currency(String value, boolean base, String name) {
