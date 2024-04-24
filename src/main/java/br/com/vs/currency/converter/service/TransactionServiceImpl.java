@@ -5,6 +5,7 @@ import br.com.vs.currency.converter.model.enums.Currency;
 import br.com.vs.currency.converter.model.exception.NotFoundException;
 import br.com.vs.currency.converter.model.repository.ConversionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -15,6 +16,7 @@ import static br.com.vs.currency.converter.utils.Messages.TRANSACTION_NOT_FOUND_
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TransactionServiceImpl implements TransactionService {
 
     private final ExchangeService exchangeService;
@@ -30,6 +32,8 @@ public class TransactionServiceImpl implements TransactionService {
 
             rateSource = getRate(conversion.getSourceCurrency(), rates);
             rateTarget = getRate(conversion.getTargetCurrency(), rates);
+        } else {
+            log.debug("m=converter, msg=\"Same currency to conversion\"");
         }
 
         conversion.calculateTarget(rateSource, rateTarget);

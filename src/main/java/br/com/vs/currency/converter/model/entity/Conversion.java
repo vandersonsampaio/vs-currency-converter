@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
@@ -27,6 +28,7 @@ import static br.com.vs.currency.converter.utils.Messages.CONVERSION_VALUE_ERROR
 @AllArgsConstructor
 @Builder
 @Getter
+@Slf4j
 public class Conversion {
 
     @Id
@@ -70,6 +72,8 @@ public class Conversion {
     public void calculateTarget(BigDecimal rateSource, BigDecimal rateTarget) {
         if (rateSource == null || sourceAmount == null ||
                 rateSource.equals(BigDecimal.ZERO) || sourceAmount.equals(BigDecimal.ZERO)) {
+            log.info("m=calculateTarget, rateSource={}, amout={}", rateSource, sourceAmount);
+
             throw new ServerErrorException(CONVERSION_VALUE_ERROR_MESSAGE);
         }
 

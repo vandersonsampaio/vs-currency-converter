@@ -4,6 +4,7 @@ import br.com.vs.currency.converter.client.ExchangeRateClient;
 import br.com.vs.currency.converter.model.enums.Currency;
 import br.com.vs.currency.converter.model.exception.ServerErrorException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import static br.com.vs.currency.converter.utils.Messages.GET_EXCHANGE_RATES_ERR
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ExchangeServiceImpl implements ExchangeService {
 
     @Value("${exchange.server.key}")
@@ -30,10 +32,14 @@ public class ExchangeServiceImpl implements ExchangeService {
     @Cacheable(value = CACHE_NAME)
     @Override
     public Map<Currency, BigDecimal> rates() {
+        log.info("m=rates, msg=\"Update Exchange Rates\"");
+
         var request = buildRequest();
         var response = client.latest(apiKey, request);
 
         if (response.getStatusCode().value() != HttpStatus.OK.value()) {
+            log.info("m=rates, msg=\"External API returned response invalid\"");
+
             throw new ServerErrorException(GET_EXCHANGE_RATES_ERROR_MESSAGE);
         }
 

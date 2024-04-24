@@ -19,6 +19,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/conversion")
 @RequiredArgsConstructor
+@Slf4j
 public class ConversionController {
 
     private final ConversionMapper mapper;
@@ -47,10 +49,11 @@ public class ConversionController {
             @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = ConversionResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema(implementation = SimpleErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
             @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
-            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = SimpleErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)})})
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ConversionResponse> getTransaction(
             @NotBlank @Size(max = 36, min = 36) @PathVariable String id) {
+        log.info("m=getTransaction, id={}", id);
 
         ConversionResponse response = mapper.from(service.getTransaction(id));
         return ResponseEntity.ok(response);
@@ -62,10 +65,11 @@ public class ConversionController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = ConversionResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
             @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
-            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = SimpleErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)})})
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     @GetMapping(value = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ConversionResponse>> findAllByUser(
             @Positive @PathVariable Long userId) {
+        log.info("m=findAllByUser, userId={}", userId);
 
         List<ConversionResponse> response = mapper.from(service.findTransactions(userId));
         return ResponseEntity.ok(response);
@@ -78,9 +82,10 @@ public class ConversionController {
             @ApiResponse(responseCode = "201", content = {@Content(schema = @Schema(implementation = ConversionResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
             @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema(implementation = SimpleErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
             @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
-            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = SimpleErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)})})
+            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ConversionResponse> createConversion(@Valid @NotNull @RequestBody ConversionRequest request) {
+        log.info("m=createConversion, userId={}", request.getUserId());
 
         Conversion conversion = mapper.to(request);
         ConversionResponse response = mapper.from(service.converter(conversion));
