@@ -48,7 +48,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<Conversion> findTransactions(Long userId) {
-        return repository.findAllByUserId(userId);
+        return repository.findAllByUserIdOrderByRegisterTimeDesc(userId);
     }
 
     @Override

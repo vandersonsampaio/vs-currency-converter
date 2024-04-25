@@ -7,17 +7,18 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.UUID;
 
 import static br.com.vs.currency.converter.utils.Messages.CONVERSION_VALUE_ERROR_MESSAGE;
@@ -61,9 +62,13 @@ public class Conversion {
     @Column(name = "vl_rate_compose", nullable = false, updatable = false, precision = 18, scale = 7)
     private BigDecimal rateCompose;
 
-    @CreationTimestamp
     @Column(name = "dt_register", updatable = false, nullable = false)
     private LocalDateTime registerTime;
+
+    @PrePersist
+    protected void onCreate() {
+        this.registerTime = LocalDateTime.now(ZoneOffset.UTC);
+    }
 
     public void generateId() {
         this.id = UUID.randomUUID().toString();

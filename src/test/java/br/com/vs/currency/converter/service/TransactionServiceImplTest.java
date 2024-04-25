@@ -151,7 +151,7 @@ class TransactionServiceImplTest {
 
         service.findTransactions(userId);
 
-        verify(repository).findAllByUserId(userId);
+        verify(repository).findAllByUserIdOrderByRegisterTimeDesc(userId);
         verifyNoMoreInteractions(repository);
         verifyNoInteractions(exchangeService);
     }

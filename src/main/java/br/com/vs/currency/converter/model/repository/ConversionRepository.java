@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface ConversionRepository extends JpaRepository<Conversion, String> {
 
-    List<Conversion> findAllByUserId(Long userId);
+    List<Conversion> findAllByUserIdOrderByRegisterTimeDesc(Long userId);
 }

@@ -1,0 +1,14 @@
+version: '3.1'
+
+services:
+  converter:
+    container_name: converter
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: currency-converter:latest
+    environment:
+      EXCHANGE_SERVER_URI: https://api.apilayer.com/exchangerates_data
+      EXCHANGE_SERVER_KEY: [YOUR_API_KEY]
+    ports:
+      - "8080:8080"
