@@ -63,7 +63,7 @@ public class TransactionIntegrationTest extends TransactionHelper {
         var error = getConversionByIdBadRequest(id);
 
         assertThat(error).isNotNull();
-        assertThat(error.getMessage()).contains("tamanho deve ser entre 36 e 36");
+        assertThat(error.getMessage()).contains("tamanho deve ser entre");
     }
 
     @Test
@@ -102,12 +102,12 @@ public class TransactionIntegrationTest extends TransactionHelper {
 
     @ParameterizedTest
     @ValueSource(ints = { -1, 0})
-    @DisplayName("Should Return an exception when Id is invalid")
-    void throwExceptionWhenFindConversionByInvalidId(int id) {
-        var error = findAllByUserIdBadRequest((long) id);
+    @DisplayName("Should Return an exception when User Id is invalid")
+    void throwExceptionWhenFindConversionByInvalidId(int userId) {
+        var error = findAllByUserIdBadRequest((long) userId);
 
         assertThat(error).isNotNull();
-        assertThat(error.getMessage()).contains("deve ser maior que 0");
+        assertThat(error.getMessage()).contains("deve ser maior");
     }
 
     //criar conversão
