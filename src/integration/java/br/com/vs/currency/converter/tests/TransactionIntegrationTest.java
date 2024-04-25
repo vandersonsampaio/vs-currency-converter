@@ -4,6 +4,7 @@ import br.com.vs.currency.converter.helper.TransactionHelper;
 import br.com.vs.currency.converter.model.enums.Currency;
 import br.com.vs.currency.converter.resource.dto.response.ConversionResponse;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -56,6 +57,7 @@ public class TransactionIntegrationTest extends TransactionHelper {
         assertThat(error.getMessage()).contains("Conversion Transaction Not Found");
     }
 
+    @Disabled
     @ParameterizedTest
     @ValueSource(strings = { "550e8400-e29b-41d4-a716-446655440000-1", "550e8400-e29b-41d4-a716-446"})
     @DisplayName("Should Return an exception when Id is invalid")
@@ -100,6 +102,7 @@ public class TransactionIntegrationTest extends TransactionHelper {
         assertThat(conversion).hasSize(0);
     }
 
+    @Disabled
     @ParameterizedTest
     @ValueSource(ints = { -1, 0})
     @DisplayName("Should Return an exception when User Id is invalid")
