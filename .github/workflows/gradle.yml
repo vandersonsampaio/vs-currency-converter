@@ -26,7 +26,7 @@ jobs:
       with:
         gradle-version: 8.5
     - name: Checkstyle with Gradle
-        run: gradle checkstyleMain checkstyleTest checkstyleIntegration
+      run: gradle checkstyleMain checkstyleTest checkstyleIntegration
     - name: Test with Gradle
       run: gradle test
     - name: Integration Test with Gradle
