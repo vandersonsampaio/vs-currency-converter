@@ -1,0 +1,11 @@
+{
+  "base": "EUR",
+  "date": "2024-04-24",
+  "rates": {
+    "BRL": 5.51,
+    "USD": 1.07,
+    "JPY": 166.11
+  },
+  "success": true,
+  "timestamp": 1519296206
+}

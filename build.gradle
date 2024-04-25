@@ -44,7 +44,7 @@ dependencies {
 
     implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
 
-    runtimeOnly 'com.h2database:h2'
+    implementation 'com.h2database:h2'
 
 	implementation 'org.flywaydb:flyway-core:10.6.0'
 
@@ -56,8 +56,11 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-test'
+    testImplementation 'com.h2database:h2'
 
     testImplementation 'io.rest-assured:rest-assured:5.4.0'
+
+    testImplementation 'com.github.tomakehurst:wiremock-standalone:3.0.1'
 
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
@@ -75,16 +78,10 @@ jacoco {
     toolVersion = "0.8.11"
 }
 
-jacocoTestReport {
-    dependsOn test
-}
-
 test {
     useJUnitPlatform()
 
     maxHeapSize = '1G'
-
-    finalizedBy jacocoTestReport
 }
 
 sourceSets {
@@ -111,3 +108,20 @@ task integrationTest(type: Test) {
     testClassesDirs = sourceSets.integration.output.classesDirs
     classpath = sourceSets.integration.runtimeClasspath
 }
+
+task allTests {
+    dependsOn test, integrationTest
+
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn allTests
+    sourceDirectories = files(sourceSets.main.allJava.srcDirs)
+    classDirectories = files(sourceSets.main.output.classesDirs) + files(sourceSets.integration.output.classesDirs)
+    additionalSourceDirs = files(sourceSets.test.allJava.srcDirs)
+
+    additionalClassDirs.from(sourceSets.integration.output.classesDirs)
+}
+
+check.dependsOn allTests
