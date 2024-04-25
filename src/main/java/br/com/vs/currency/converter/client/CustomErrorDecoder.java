@@ -1,11 +1,9 @@
 package br.com.vs.currency.converter.client;
 
-import br.com.vs.currency.converter.model.exception.BadRequestException;
+import br.com.vs.currency.converter.model.exception.DependencyFailureException;
 import br.com.vs.currency.converter.model.exception.GenericErrorException;
-import br.com.vs.currency.converter.model.exception.NotFoundException;
-import br.com.vs.currency.converter.model.exception.ServerErrorException;
-import br.com.vs.currency.converter.model.exception.TooManyRequestException;
-import br.com.vs.currency.converter.model.exception.UnauthorizedException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
 import feign.Util;
 import feign.codec.ErrorDecoder;
@@ -17,21 +15,32 @@ public class CustomErrorDecoder implements ErrorDecoder {
 
     @Override
     public Exception decode(String methodKey, Response response) {
-        String body;
+        ObjectMapper objectMapper = new ObjectMapper();
+        String name;
 
         try {
-            body = Util.toString(response.body().asReader(StandardCharsets.UTF_8));
+            String body = Util.toString(response.body().asReader(StandardCharsets.UTF_8));
+            JsonNode jsonNode = objectMapper.readTree(body);
+
+            name = jsonNode.get("message").asText();
         } catch (IOException e) {
             throw new GenericErrorException(e);
         }
 
-        return switch (response.status()) {
-            case 400 -> new BadRequestException(body);
-            case 401 -> new UnauthorizedException(body);
-            case 404 -> new NotFoundException(body);
-            case 429 -> new TooManyRequestException(body);
-            case 500, 502, 503, 504 -> new ServerErrorException(body);
-            default -> new GenericErrorException();
-        };
+        if (isFamily400(response.status()) || isFamily500(response.status())) {
+            return new DependencyFailureException(name);
+        } else {
+            return new GenericErrorException();
+        }
+    }
+
+    private boolean isFamily400(int status) {
+        return status == 400 || status == 401 ||
+                status == 404 || status == 429;
+    }
+
+    private boolean isFamily500(int status) {
+        return status == 500 || status == 502 ||
+                status == 503 || status == 504;
     }
 }

@@ -140,7 +140,8 @@ class TransactionServiceImplTest {
 
         double targetAmount = 301.82D;
         double rateCompose = 30.182D;
-        assertConversionValues(conversionCaptor.getValue(), targetAmount, rateCompose, JPY_VALUE.doubleValue(), BRL_VALUE.doubleValue());
+        assertConversionValues(conversionCaptor.getValue(), targetAmount, rateCompose,
+                JPY_VALUE.doubleValue(), BRL_VALUE.doubleValue());
     }
 
     @Test

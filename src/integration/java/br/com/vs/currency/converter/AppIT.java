@@ -17,13 +17,14 @@ public class AppIT {
     protected int port;
 
     protected static final int WIREMOCK_PORT = 8099;
-    private static WireMockServer wireMockServer;
+    protected static WireMockServer wireMockServer;
 
     @BeforeAll
     public static void setup() {
         wireMockServer = new WireMockServer(WIREMOCK_PORT);
         wireMockServer.start();
         WireMock.configureFor("localhost", WIREMOCK_PORT);
+        System.setProperty("exchange.server.uri", "localhost:" + WIREMOCK_PORT);
     }
 
     @AfterAll

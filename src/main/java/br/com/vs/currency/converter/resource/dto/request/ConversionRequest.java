@@ -9,17 +9,24 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+import static br.com.vs.currency.converter.utils.Messages.CONVERSION_AMOUNT_POSITIVE_MESSAGE;
+import static br.com.vs.currency.converter.utils.Messages.CURRENCY_NOT_NULL_MESSAGE;
+import static br.com.vs.currency.converter.utils.Messages.USER_ID_POSITIVE_MESSAGE;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class ConversionRequest {
 
-    @Positive
+    @Positive(message = USER_ID_POSITIVE_MESSAGE)
     private Long userId;
-    @NotNull
+
+    @NotNull(message = CURRENCY_NOT_NULL_MESSAGE)
     private Currency sourceCurrency;
-    @Positive
+
+    @Positive(message = CONVERSION_AMOUNT_POSITIVE_MESSAGE)
     private BigDecimal amount;
-    @NotNull
+
+    @NotNull(message = CURRENCY_NOT_NULL_MESSAGE)
     private Currency targetCurrency;
 }

@@ -32,6 +32,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static br.com.vs.currency.converter.utils.Messages.CONVERSION_ID_LENGTH_MESSAGE;
+import static br.com.vs.currency.converter.utils.Messages.USER_ID_POSITIVE_MESSAGE;
+
 @Tag(name = "Digital Account", description = "Digital Account management APIs")
 @RestController
 @RequestMapping("/conversion")
@@ -46,13 +49,21 @@ public class ConversionController {
             summary = "Retrieve a Conversion Transaction by Id",
             description = "Get a Conversion Transaction object by specifying its Id.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = ConversionResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
-            @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema(implementation = SimpleErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
-            @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
-            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)})})
+            @ApiResponse(responseCode = "200",
+                    content = {@Content(schema = @Schema(implementation = ConversionResponse.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "404",
+                    content = {@Content(schema = @Schema(implementation = SimpleErrorResponse.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "400",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "500",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ConversionResponse> getTransaction(
-            @NotBlank @Size(max = 36, min = 36) @PathVariable String id) {
+            @NotBlank @Size(max = 36, min = 36, message = CONVERSION_ID_LENGTH_MESSAGE) @PathVariable String id) {
         log.info("m=getTransaction, id={}", id);
 
         ConversionResponse response = mapper.from(service.getTransaction(id));
@@ -63,12 +74,18 @@ public class ConversionController {
             summary = "Retrieve all User Conversion Transactions by its User ID",
             description = "Find all User Conversion Transaction objects by specifying its User Id.")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", content = {@Content(schema = @Schema(implementation = ConversionResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
-            @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
-            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)})})
+            @ApiResponse(responseCode = "200",
+                    content = {@Content(schema = @Schema(implementation = ConversionResponse.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "400",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "500",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     @GetMapping(value = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<ConversionResponse>> findAllByUser(
-            @Positive @PathVariable Long userId) {
+            @Positive(message = USER_ID_POSITIVE_MESSAGE) @PathVariable Long userId) {
         log.info("m=findAllByUser, userId={}", userId);
 
         List<ConversionResponse> response = mapper.from(service.findTransactions(userId));
@@ -79,10 +96,18 @@ public class ConversionController {
             summary = "Create a conversion between different currencies",
             description = "Create a Conversion Transaction object between different currencies.")
     @ApiResponses({
-            @ApiResponse(responseCode = "201", content = {@Content(schema = @Schema(implementation = ConversionResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
-            @ApiResponse(responseCode = "404", content = {@Content(schema = @Schema(implementation = SimpleErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
-            @ApiResponse(responseCode = "400", content = {@Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)}),
-            @ApiResponse(responseCode = "500", content = {@Content(schema = @Schema(implementation = ErrorResponse.class), mediaType = MediaType.APPLICATION_JSON_VALUE)})})
+            @ApiResponse(responseCode = "201",
+                    content = {@Content(schema = @Schema(implementation = ConversionResponse.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "400",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "424",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "500",
+                    content = {@Content(schema = @Schema(implementation = ErrorResponse.class),
+                            mediaType = MediaType.APPLICATION_JSON_VALUE)})})
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ConversionResponse> createConversion(@Valid @NotNull @RequestBody ConversionRequest request) {
         log.info("m=createConversion, userId={}", request.getUserId());
